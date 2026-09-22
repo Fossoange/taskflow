@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Connexion - TaskFlow</title>
+    <title>Mot de passe oublié - TaskFlow</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -32,7 +32,7 @@
 
     <div class="w-full max-w-md">
 
-        <!-- Logo / Nom -->
+        <!-- Logo -->
         <div class="text-center mb-8">
             <a href="/" class="inline-flex items-center gap-2">
                 <div class="w-11 h-11 bg-taskflow-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -45,7 +45,7 @@
             </a>
 
             <p class="mt-3 text-slate-500">
-                Gérez vos projets et vos tâches simplement.
+                Récupérez l'accès à votre compte.
             </p>
         </div>
 
@@ -54,15 +54,25 @@
 
             <div class="mb-7">
                 <h1 class="text-2xl font-bold text-slate-800">
-                    Bienvenue !
+                    Mot de passe oublié ?
                 </h1>
 
-                <p class="mt-1 text-sm text-slate-500">
-                    Connectez-vous à votre compte TaskFlow.
+                <p class="mt-2 text-sm text-slate-500">
+                    Entrez votre adresse email et nous vous enverrons
+                    un lien pour réinitialiser votre mot de passe.
                 </p>
             </div>
 
-            <!-- Erreurs générales -->
+            <!-- Message de succès -->
+            @if (session('status'))
+                <div class="mb-6 rounded-lg bg-green-50 border border-green-200 px-4 py-3">
+                    <p class="text-sm text-green-600">
+                        {{ session('status') }}
+                    </p>
+                </div>
+            @endif
+
+            <!-- Erreurs -->
             @if ($errors->any())
                 <div class="mb-6 rounded-lg bg-red-50 border border-red-200 px-4 py-3">
                     <ul class="text-sm text-red-600 space-y-1">
@@ -73,10 +83,9 @@
                 </div>
             @endif
 
-            <form method="POST" action="/login" class="space-y-5">
+            <form method="POST" action="/forgot-password" class="space-y-5">
                 @csrf
 
-                <!-- Email -->
                 <div>
                     <label
                         for="email"
@@ -107,64 +116,6 @@
                     @enderror
                 </div>
 
-                <!-- Mot de passe -->
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <label
-                            for="password"
-                            class="block text-sm font-medium text-slate-700"
-                        >
-                            Mot de passe
-                        </label>
-
-                        <a
-                            href="/forgot-password"
-                            class="text-sm text-taskflow-600 hover:text-taskflow-700 font-medium"
-                        >
-                            Mot de passe oublié ?
-                        </a>
-                    </div>
-
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        required
-                        autocomplete="current-password"
-                        placeholder="••••••••"
-                        class="w-full px-4 py-3 rounded-lg border border-slate-300
-                               text-slate-800 placeholder-slate-400
-                               focus:outline-none focus:ring-2 focus:ring-taskflow-500
-                               focus:border-taskflow-500 transition"
-                    >
-
-                    @error('password')
-                        <p class="mt-1 text-sm text-red-600">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>
-
-                <!-- Se souvenir de moi -->
-                <div class="flex items-center">
-                    <input
-                        type="checkbox"
-                        id="remember"
-                        name="remember"
-                        value="1"
-                        class="w-4 h-4 rounded border-slate-300 text-taskflow-600
-                               focus:ring-taskflow-500"
-                    >
-
-                    <label
-                        for="remember"
-                        class="ml-2 text-sm text-slate-600"
-                    >
-                        Se souvenir de moi
-                    </label>
-                </div>
-
-                <!-- Bouton -->
                 <button
                     type="submit"
                     class="w-full py-3 px-4 rounded-lg
@@ -173,21 +124,18 @@
                            shadow-sm hover:shadow-md
                            transition duration-200"
                 >
-                    Se connecter
+                    Envoyer le lien
                 </button>
             </form>
 
-            <!-- Inscription -->
+            <!-- Retour connexion -->
             <div class="mt-7 pt-6 border-t border-slate-200 text-center">
-                <p class="text-sm text-slate-500">
-                    Vous n'avez pas encore de compte ?
-                    <a
-                        href="/register"
-                        class="font-semibold text-taskflow-600 hover:text-taskflow-700"
-                    >
-                        Créer un compte
-                    </a>
-                </p>
+                <a
+                    href="/login"
+                    class="text-sm font-semibold text-taskflow-600 hover:text-taskflow-700"
+                >
+                    ← Retour à la connexion
+                </a>
             </div>
 
         </div>

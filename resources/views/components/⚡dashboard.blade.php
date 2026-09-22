@@ -1,4 +1,34 @@
-<?php use Livewire\Component; use App\Models\Project; use App\Models\Task; use Illuminate\Support\Carbon; new class extends Component { public $totalProjects; public $totalTasks; public $completedTasks; public $inProgressTasks; public $overdueTasks; public $progression; public $recentTasks; public $upcomingTasks; public function mount() { $userId = auth()->id(); $this->totalProjects = Project::where('user_id', $userId)->count(); $tasks = Task::whereHas('project', function ($query) use ($userId) { $query->where('user_id', $userId); }); $this->totalTasks = $tasks->count(); $this->completedTasks = (clone $tasks) ->where('status', 'termine') ->count(); $this->inProgressTasks = (clone $tasks) ->where('status', 'en_cours') ->count(); $this->overdueTasks = (clone $tasks) ->whereDate('due_date', '<', Carbon::today()) ->where('status', '!=', 'termine') ->count(); $this->progression = $this->totalTasks > 0 ? round(($this->completedTasks / $this->totalTasks) * 100) : 0; $this->recentTasks = (clone $tasks) ->with('project') ->latest('updated_at') ->take(5) ->get(); $this->upcomingTasks = (clone $tasks) ->with('project') ->whereNotNull('due_date') ->where('status', '!=', 'termine') ->whereDate('due_date', '>=', Carbon::today()) ->orderBy('due_date') ->take(5) ->get(); } }; ?>
+<?php 
+use Livewire\Component; 
+use App\Models\Project; 
+use App\Models\Task; 
+use Illuminate\Support\Carbon; 
+new class extends Component 
+{ 
+public $totalProjects; 
+public $totalTasks; 
+public $completedTasks; 
+public $inProgressTasks; 
+public $overdueTasks; 
+public $progression; 
+public $recentTasks; 
+public $upcomingTasks; 
+
+public function mount() 
+{ 
+    $userId = auth()->id();
+    $this->totalProjects = Project::where('user_id', $userId)->count();
+    $tasks = Task::whereHas('project', function ($query) use ($userId) { $query->where('user_id', $userId); }); 
+    $this->totalTasks = $tasks->count(); 
+    $this->completedTasks = (clone $tasks)->where('status', 'termine')->count(); 
+    $this->inProgressTasks = (clone $tasks) ->where('status', 'en_cours') ->count(); 
+    $this->overdueTasks = (clone $tasks) ->whereDate('due_date', '<', Carbon::today())->where('status', '!=', 'termine') ->count(); 
+    $this->progression = $this->totalTasks > 0 ? round(($this->completedTasks / $this->totalTasks) * 100) : 0; 
+    $this->recentTasks = (clone $tasks) ->with('project') ->latest('updated_at')->take(5)->get(); 
+    $this->upcomingTasks = (clone $tasks) ->with('project') ->whereNotNull('due_date') ->where('status', '!=', 'termine') ->whereDate('due_date', '>=', Carbon::today()) ->orderBy('due_date') ->take(5) ->get();
+} 
+}; 
+?>
 
 <div class="max-w-7xl mx-auto">
 
